@@ -12,9 +12,9 @@ def playMoves (s : GameState) (moves : List Col) : Option GameState :=
   moves.foldl (fun acc c => acc.bind (fun st => st.applyMove c)) (some s)
 
 example : gameResult GameState.init = .Ongoing := by
-  simpa using init_ongoing
+  simp
 
-example : legalMoves GameState.init.board |>.length = cols := by
+example : (legalMoves GameState.init.board).length = cols := by
   native_decide
 
 example : Player.other (Player.other .Red) = .Red := by

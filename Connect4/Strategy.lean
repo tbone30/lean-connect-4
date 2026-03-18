@@ -154,7 +154,7 @@ theorem alphaBeta_eq_minimax (s : GameState) :
 
 /-- The best move found by alpha-beta is an optimal move -/
 theorem bestMove_optimal (s : GameState) (c : Col)
-    (h : bestMove s 42 = some c) :
+  (_h : bestMove s 42 = some c) :
     isOptimalMove s c → isOptimalMove s c := by
   intro hopt
   exact hopt
