@@ -18,15 +18,49 @@ const newGameButton = document.getElementById("new-game");
 newGameButton.addEventListener("click", resetGame);
 
 async function requestJson(url, options = {}) {
-  const response = await fetch(url, {
-    headers: { "Content-Type": "application/json" },
-    ...options,
-  });
-  const data = await response.json();
-  if (!response.ok || !data.ok) {
-    throw new Error(data.error || `Request failed: ${response.status}`);
+  const method = options.method || "GET";
+  const bodyText = typeof options.body === "string" ? options.body : null;
+  const body = bodyText ? (() => {
+    try {
+      return JSON.parse(bodyText);
+    } catch {
+      return bodyText;
+    }
+  })() : undefined;
+
+  const startedAt = performance.now();
+  console.log("[API request]", { method, url, body });
+
+  try {
+    const response = await fetch(url, {
+      headers: { "Content-Type": "application/json" },
+      ...options,
+    });
+    const data = await response.json();
+    const elapsedMs = Math.round(performance.now() - startedAt);
+
+    console.log("[API response]", {
+      method,
+      url,
+      status: response.status,
+      elapsedMs,
+      data,
+    });
+
+    if (!response.ok || !data.ok) {
+      throw new Error(data.error || `Request failed: ${response.status}`);
+    }
+    return data;
+  } catch (error) {
+    const elapsedMs = Math.round(performance.now() - startedAt);
+    console.error("[API error]", {
+      method,
+      url,
+      elapsedMs,
+      message: error instanceof Error ? error.message : String(error),
+    });
+    throw error;
   }
-  return data;
 }
 
 function isGameOver() {
