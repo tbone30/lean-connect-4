@@ -65,18 +65,21 @@ lake build
 
 ## Play in Browser
 
-A runnable web UI is included in [web/index.html](web/index.html).
+A runnable web UI + backend API is included.
+
+The browser talks to a Python backend, and the backend calls the Lean executable
+for game rules, win detection, and computer move selection.
 
 From the repository root, start a static file server:
 
 ```bash
-python -m http.server 8000
+python backend/server.py
 ```
 
 Then open:
 
 ```text
-http://localhost:8000/web/
+http://127.0.0.1:8000/
 ```
 
 Controls:

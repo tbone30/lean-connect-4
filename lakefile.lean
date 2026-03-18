@@ -9,3 +9,6 @@ require mathlib from git
 
 lean_lib «Connect4» where
   roots := #[`Connect4]
+
+lean_exe "connect4-engine" where
+  root := `Engine

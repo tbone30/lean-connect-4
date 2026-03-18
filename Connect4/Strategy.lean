@@ -93,6 +93,15 @@ def Score.ofInt : Int → Score
   | 0      => .Draw
   | _      => .Loss
 
+def orderedMoves (moves : List Col) : List Col :=
+  let preferred : List Nat := [3, 2, 4, 1, 5, 0, 6]
+  preferred.filterMap fun n =>
+    if h : n < cols then
+      let c : Col := ⟨n, h⟩
+      if c ∈ moves then some c else none
+    else
+      none
+
 /-- Alpha-beta search. Returns score for the current player.
     alpha: best score current player is guaranteed
     beta:  best score opponent is guaranteed (current player's ceiling) -/
@@ -104,9 +113,7 @@ partial def alphaBeta (s : GameState) (α β : Int) (depth : ℕ) : Int :=
     if depth = 0 then 0  -- horizon: treat as draw (for bounded search)
     else
       let moves := legalMoves s.board
-      -- Move ordering: prefer center columns (heuristic)
-      let ordered := moves.mergeSort (fun a b =>
-        Int.natAbs (3 - a.val) < Int.natAbs (3 - b.val))
+      let ordered := orderedMoves moves
       let rec loop (ms : List Col) (α : Int) : Int :=
         match ms with
         | [] => α
@@ -126,7 +133,7 @@ def bestMove (s : GameState) (depth : ℕ) : Option Col :=
   match moves with
   | [] => none
   | _ :: _  =>
-    let scored := moves.map fun c =>
+    let scored := (orderedMoves moves).map fun c =>
       match s.applyMove c with
       | none    => (c, (-2 : Int))
       | some s' => (c, -(alphaBeta s' (-1) 1 (depth - 1)))
