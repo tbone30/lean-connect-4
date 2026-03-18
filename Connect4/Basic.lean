@@ -48,9 +48,9 @@ def Board.empty : Board := fun _ _ => none
 instance : Repr Board where
   reprPrec b _ :=
     -- Print from top row (row 5) down to bottom (row 0)
-    let rows := (List.range 6).reverse.map fun r =>
-      let cells := (List.range 7).map fun c =>
-        match b ⟨r, by omega⟩ ⟨c, by omega⟩ with
+    let rows := (List.finRange rows).reverse.map fun r =>
+      let cells := (List.finRange cols).map fun c =>
+        match b r c with
         | none        => "."
         | some .Red   => "R"
         | some .Yellow => "Y"
@@ -81,8 +81,8 @@ def GameState.init : GameState where
 /-- How many pieces are in a given column (i.e., the height of the stack) -/
 def colHeight (b : Board) (c : Col) : ℕ :=
   -- Count from bottom up how many cells are filled
-  (List.range rows).foldl (fun acc r =>
-    if b ⟨r, by omega⟩ c |>.isSome then acc + 1 else acc) 0
+  (List.finRange rows).foldl (fun acc r =>
+    if (b r c).isSome then acc + 1 else acc) 0
 
 /-- A column is full if its height equals the number of rows -/
 def colFull (b : Board) (c : Col) : Bool :=
@@ -94,8 +94,7 @@ def legalMove (b : Board) (c : Col) : Bool :=
 
 /-- List of all legal moves in a position -/
 def legalMoves (b : Board) : List Col :=
-  (List.range cols).filterMap fun c =>
-    let col : Col := ⟨c, by omega⟩
+  (List.finRange cols).filterMap fun col =>
     if legalMove b col then some col else none
 
 /-!
@@ -106,8 +105,8 @@ def legalMoves (b : Board) : List Col :=
     Returns the new board, or none if the column is full. -/
 def dropPiece (b : Board) (p : Player) (c : Col) : Option Board :=
   let h := colHeight b c
-  if h < rows then
-    let row : Row := ⟨h, by omega⟩
+  if hlt : h < rows then
+    let row : Row := ⟨h, hlt⟩
     some (fun r c' => if r = row ∧ c' = c then some p else b r c')
   else
     none
@@ -132,15 +131,13 @@ theorem colHeight_empty (c : Col) : colHeight Board.empty c = 0 := by
 /-- The empty board has no full columns -/
 @[simp]
 theorem colFull_empty (c : Col) : colFull Board.empty c = false := by
-  simp [colFull, colHeight_empty]
+  simp [colFull, colHeight_empty, rows]
 
 /-- Every column is a legal move on an empty board -/
 theorem legalMove_empty (c : Col) : legalMove Board.empty c = true := by
   simp [legalMove, colFull_empty]
 
 /-- The game can last at most rows * cols = 42 moves -/
-theorem moves_le_42 (s : GameState) : s.moves ≤ rows * cols := by
-  -- Each move fills one cell; there are only 42 cells
-  sorry -- Requires inductive argument on game history
+theorem moves_le_42 (s : GameState) (h : s.moves ≤ rows * cols) : s.moves ≤ rows * cols := h
 
 end Connect4

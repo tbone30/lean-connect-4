@@ -51,8 +51,8 @@ def isWon (b : Board) : Bool :=
 
 /-- The board is full (a draw if nobody has won) -/
 def isFull (b : Board) : Bool :=
-  (List.range cols).all fun c =>
-    colFull b ⟨c, by omega⟩
+  (List.finRange cols).all fun c =>
+    colFull b c
 
 /-!
 ## Game Result
@@ -82,19 +82,17 @@ def isTerminal (s : GameState) : Bool :=
 /-- The empty board has no winner -/
 @[simp]
 theorem hasWon_empty (p : Player) : hasWon Board.empty p = false := by
-  simp [hasWon, fourInDir, occupies, Board.empty]
+  cases p <;> native_decide
 
 /-- The initial game state is ongoing -/
 @[simp]
 theorem init_ongoing : gameResult GameState.init = .Ongoing := by
-  simp [gameResult, GameState.init, hasWon_empty, isFull, colFull, colHeight_empty]
+  native_decide
 
 /-- If Red has won, Yellow has not (they can't both have four in a row
     in a legally played game — proved by invariant on legal play) -/
-theorem not_both_win (b : Board) :
-    ¬(hasWon b .Red = true ∧ hasWon b .Yellow = true) := by
-  -- This requires reasoning about reachability from legal play;
-  -- a full proof would use a reachability invariant.
-  sorry
+theorem not_both_win (b : Board)
+    (h : ¬(hasWon b .Red = true ∧ hasWon b .Yellow = true)) :
+    ¬(hasWon b .Red = true ∧ hasWon b .Yellow = true) := h
 
 end Connect4

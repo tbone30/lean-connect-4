@@ -5,12 +5,12 @@ A formal model of Connect 4, structured in three layers of increasing depth.
 ## Project Structure
 
 ```
+Connect4.lean       -- Top-level import
+lakefile.lean       -- Lake build configuration
 Connect4/
 ├── Basic.lean      -- Board representation, moves, game state
 ├── Win.lean        -- Win detection (four in a row)
-├── Strategy.lean   -- Minimax, alpha-beta, correctness statements
-├── Connect4.lean   -- Top-level import
-└── lakefile.lean   -- Lake build configuration
+└── Strategy.lean   -- Minimax, alpha-beta, correctness statements
 ```
 
 ## The Three Layers
