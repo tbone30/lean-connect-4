@@ -63,6 +63,27 @@ lake update
 lake build
 ```
 
+## Play in Browser
+
+A runnable web UI is included in [web/index.html](web/index.html).
+
+From the repository root, start a static file server:
+
+```bash
+python -m http.server 8000
+```
+
+Then open:
+
+```text
+http://localhost:8000/web/
+```
+
+Controls:
+- Click a column button to drop your red piece
+- The computer (yellow) responds automatically
+- Use **New Game** to restart
+
 ## Next Steps
 
 1. Fill in the `sorry` proofs, starting with `moves_le_42`

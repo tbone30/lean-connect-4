@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Connect 4 vs Computer</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <h1>Connect 4</h1>
+      <p class="subtitle">You are Red. Computer is Yellow.</p>
+
+      <section class="controls" aria-label="Game controls">
+        <button id="new-game" type="button">New Game</button>
+        <p id="status" class="status" role="status" aria-live="polite"></p>
+      </section>
+
+      <section class="board-wrapper" aria-label="Connect 4 board">
+        <div id="column-buttons" class="column-buttons"></div>
+        <div id="board" class="board" role="grid" aria-label="Connect 4"></div>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
